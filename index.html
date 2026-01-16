@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>i-KJ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Interface Permulaan -->
+<div id="startScreen">
+  <div class="start-bg-video-wrap">
+    <video id="startBgVideo" autoplay loop muted playsinline disablePictureInPicture>
+      <source src="b1.mov" type="video/quicktime">
+      <source src="b1.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <button id="startSoundToggle" style="position:absolute;top:16px;right:16px;z-index:10;background:rgba(255,255,255,0.7);border:none;border-radius:50%;width:44px;height:44px;cursor:pointer;font-size:1.7em;display:flex;align-items:center;justify-content:center;">
+      <span id="startSoundIcon">🔊</span>
+    </button>
+  </div>
+  <div class="start-content">
+    <h2>Masukkan Nama Pemain</h2>
+    <form id="playerForm">
+      <input type="text" name="player1" placeholder="Pemain 1" required><br>
+      <input type="text" name="player2" placeholder="Pemain 2"><br>
+      <input type="text" name="player3" placeholder="Pemain 3"><br>
+      <input type="text" name="player4" placeholder="Pemain 4"><br>
+      <button type="submit" id="startGameBtn">Mula</button>
+    </form>
+  </div>
+</div>
+
+<!-- Game Board (disembunyikan pada permulaan) -->
+<div id="gameContainer" style="display:none;">
+  <h1 class="fancy-title">i-KJ</h1>
+  <div id="playerNamesBar" class="player-names-bar"></div>
+
+  <!-- Kawasan token dan dadu -->
+  <div id="gameControls" style="display:flex;flex-direction:column;align-items:center;margin-bottom:10px;">
+    <div id="tokensBar" style="display:flex;gap:16px;margin-bottom:10px;"></div>
+    <div id="dicePopup" class="dice-popup">
+      <div id="diceBox" class="dice-anim">
+        <span id="diceIcon">🎲</span>
+        <span id="diceNum" class="dice-num" style="display:none;"></span>
+      </div>
+    </div>
+    <div id="turnInfo" style="margin-top:4px;font-size:1em;"></div>
+  </div>
+  <div id="board" style="position:relative;">
+        <!-- Audio background dan ikon sound -->
+        <audio id="bgAudio" src="s1.mp3" loop></audio>
+        <button id="soundToggle" style="position:absolute;top:10px;right:10px;z-index:10;background:rgba(255,255,255,0.7);border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:1.5em;display:flex;align-items:center;justify-content:center;">
+          <span id="soundIcon">🔊</span>
+        </button>
+    <!-- 14 QR box, 6 kotak kosong sahaja -->
+    <div class="box qr" data-id="1" style="top:5%;left:5%;"></div>
+    <div class="box kosong" id="kosong1" style="top:5%;left:20%;"><span class="kosong-label">1</span></div>
+    <div class="box qr" data-id="2" style="top:5%;left:35%;"></div>
+    <div class="box kosong" style="top:5%;left:50%;"><span class="kosong-label">2</span></div>
+    <div class="box qr" data-id="3" style="top:5%;left:65%;"></div>
+    <div class="box kosong" style="top:5%;left:80%;"><span class="kosong-label">3</span></div>
+    <div class="box qr" data-id="4" style="top:20%;left:80%;"></div>
+    <div class="box kosong" style="top:35%;left:80%;"><span class="kosong-label">4</span></div>
+    <div class="box qr" data-id="5" style="top:50%;left:80%;"></div>
+    <div class="box kosong" style="top:65%;left:80%;"><span class="kosong-label">5</span></div>
+    <div class="box qr" data-id="6" style="top:80%;left:80%;"></div>
+    <div class="box kosong" style="top:80%;left:65%;"><span class="kosong-label">6</span></div>
+    <div class="box qr" data-id="7" style="top:80%;left:50%;"></div>
+    <div class="box qr" data-id="8" style="top:80%;left:35%;"></div>
+    <div class="box qr" data-id="9" style="top:80%;left:20%;"></div>
+    <div class="box qr" data-id="10" style="top:80%;left:5%;"></div>
+    <div class="box qr" data-id="11" style="top:65%;left:5%;"></div>
+    <div class="box qr" data-id="12" style="top:50%;left:5%;"></div>
+    <div class="box qr" data-id="13" style="top:35%;left:5%;"></div>
+    <div class="box qr" data-id="14" style="top:20%;left:5%;"></div>
+
+    <!-- 1 Video box -->
+    <div class="box video" data-id="video"></div>
+
+    <!-- 1 Soalan box -->
+    <div class="box soalan" data-id="soalan"></div>
+  </div>
+
+  <!-- LOCK/UNLOCK button -->
+  <button id="lockButton">🔒 Lock Susunan</button>
+  <button id="unlockButton" style="display:none;">🔓 Unlock Susunan</button>
+</div>
+
+<!-- POPUP QR -->
+<div id="popup">
+  <div class="popup-content">
+    <button id="closePopupBtn" style="position:absolute;top:10px;left:10px;font-size:1.5em;z-index:2;">×</button>
+    <img id="popupImg">
+    <p id="popupText"></p>
+  </div>
+</div>
+
+<!-- POPUP Video -->
+<div id="videoPopup">
+  <div class="popup-content">
+    <video id="videoPlayer" controls></video>
+    <div id="videoList"></div>
+    <button onclick="closeVideo()">Tutup Video</button>
+  </div>
+</div>
+
+<!-- POPUP Soalan -->
+<div id="soalanPopup">
+  <div class="popup-content">
+    <div id="soalanImageWrap" style="margin-bottom:16px;"></div>
+    <button id="soalanRawakBtn">Soalan Rawak</button>
+    <button onclick="closeSoalan()">Tutup Soalan</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+<script src="soalan/data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
